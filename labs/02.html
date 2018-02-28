@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="http://todomvc.com/examples/vanilla-es6/node_modules/todomvc-common/base.css">
+    <link rel="stylesheet" href="http://todomvc.com/examples/vanilla-es6/node_modules/todomvc-app-css/index.css">
+    <title>Lecture 01</title>
+</head>
+<body>
+<section class="todoapp">
+    <header class="header">
+        <h1>todos</h1>
+        <input class="new-todo" placeholder="What needs to be done?" autofocus>
+    </header>
+    <section class="main">
+        <input class="toggle-all" type="checkbox">
+        <label for="toggle-all">Mark all as complete</label>
+        <ul class="todo-list"></ul>
+        <footer class="footer">
+            <span class="todo-count"></span>
+            <div class="filters">
+                <a id="filter-all" href="#/" class="selected">All</a>
+                <a id="filter-active" href="#/active">Active</a>
+                <a id="filter-completed" href="#/completed">Completed</a>
+            </div>
+            <button class="clear-completed">Clear completed</button>
+        </footer>
+    </section>
+</section>
+
+<footer class="info">
+    <p>Double-click to edit a todo</p>
+    <p>Created by <a href="http://twitter.com/oscargodson">Oscar Godson</a></p>
+    <p>Refactored by <a href="https://github.com/cburgmer">Christoph Burgmer</a></p>
+    <p>Part of <a href="http://todomvc.com">TodoMVC</a></p>
+</footer>
+
+<script>
+
+    function State(initialTodos, initialFilter) {
+        this._todos = initialTodos;
+        this._filter = initialFilter;
+    }
+
+    State.prototype.getTodos = function () {
+        var filter = function (todo) {
+            if (this._filter === 'all') return true;
+            if (this._filter === 'completed') return todo.completed;
+            if (this._filter === 'active') return !todo.completed;
+        };
+
+        return this._todos.filter(filter, this);
+    };
+
+    State.prototype.addTodo = function (newTodo) {
+        this._todos.push(newTodo);
+        render(this);
+    };
+
+    State.prototype.setFilter = function (newFilter) {
+        this._filter = newFilter;
+        render(this);
+    };
+
+    var render = function (state) {
+        createHtmlWithStrings(state.getTodos(), document.querySelector(".todo-list"));
+    };
+
+    var filters = {
+        'all' : document.querySelector('#filter-all'),
+        'completed' : document.querySelector('#filter-completed'),
+        'active' : document.querySelector('#filter-active')
+    };
+
+    for(var filter in filters){ //filter is key in the object
+        var node = filters[filter];
+        var onClick = function (f, e) {
+            state.setFilter(f);
+        };
+
+        var onClick2 = onClick.bind(this, filter); // we fix filter -> access to the modified closure
+        node.addEventListener('click', onClick2())
+    }
+
+
+    var input = document.querySelector(".new-todo");
+    input.addEventListener("keydown", function (e) {
+        if (e.keyCode !== 13) return;
+
+        var text = e.target.value.trim();
+        if (!text) return; //if text is empty
+
+        e.target.value = "";
+        var newTodo = {
+            text: text,
+            completed: false
+        };
+
+        state.addTodo(newTodo);
+    });
+
+    var init = {
+        todos: [
+            {text: 'Hi', completed: true},
+            {text: 'Hello', completed: false},
+            {text: 'Hi there!', completed: true},
+        ],
+        filter: 'all'
+    };
+    var state = new State(init.todos, 'all');
+
+    function createHtmlWithStrings(todos, targetEl) {
+        targetEl.innerHTML = '';
+
+        for (var i = 0; i < todos.length; i++) {
+            var todo = todos[i];
+
+            var html =
+                '<li>' +
+                '  <input class="toggle" type="checkbox" ' + (todo.completed ? 'checked' : '') + '>' +
+                '  <label>' + todo.text + '</label>' +
+                '  <button class="destroy"></button>' +
+                '</li>';
+
+            targetEl.insertAdjacentHTML('beforeend', html);
+        }
+    }
+
+    var todoListEl = document.querySelector('.todo-list');
+    createHtmlWithStrings(state.getTodos(), todoListEl);
+</script>
+
+</body>
+</html>
