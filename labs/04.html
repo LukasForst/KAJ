@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Lecture 04 - Keyboard</title>
+    <style>
+        body, html {
+            height: 100%;
+            font-family: Arial,serif;
+        }
+
+        div {
+            background: red;
+            width: 200px;
+            height: 200px;
+            position: absolute;
+            top: 20px;
+            left: 40px;
+            border-radius: 50%;
+            box-sizing: border-box;
+            text-align: center;
+            padding-top: 80px;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        div a {
+            color: white;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+<div id="circle"><a href="http://www.seznam.cz">SEZNAM</a></div>
+<script>
+    class Move {
+        constructor(x, y, element) {
+            this._step = 10;
+            this.x = x;
+            this.y = y;
+            this.element = element;
+            this.element.style.top = x + 'px';
+            this.element.style.left = y + 'px';
+
+            document.addEventListener("keydown", (e) => {
+                this._keydown(e);
+                this._log(e);
+            });
+
+            document.addEventListener("click", (e) => this._showConfirm(e));
+        }
+
+        _log(e){
+            console.log(`[${this.x}, ${this.y}`)
+        }
+
+        _keydown(e) {
+            switch (e.code) {
+                case "ArrowUp":
+                    this._move('top', -this._step);
+                    break; // up
+                case "ArrowDown":
+                    this._move('top', this._step);
+                    break; // down
+                case "ArrowLeft":
+                    this._move('left', -this._step);
+                    break; // left
+                case "ArrowRight":
+                    this._move('left', this._step);
+                    break; // right
+            }
+        }
+
+        _move(where, step) {
+            this.element.style[where] = (parseInt(this.element.style[where]) + step) + 'px';
+        }
+
+        _showConfirm(event){
+            if(event.target.nodeName.toLowerCase() !== 'a') return;
+            event.preventDefault();
+            if(confirm("Do you really want to leave this site?")) {
+                window.location.replace(event.target.href);
+            }
+        }
+    }
+
+    let circle = document.getElementById('circle');
+    let moves = new Move(100, 100, circle);
+
+</script>
+</body>
+</html>
