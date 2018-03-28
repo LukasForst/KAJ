@@ -12,6 +12,100 @@
             background-color: #fff;
         }
 
+        input {
+            display: none;
+        }
+
+        article > input + label {
+            width: 200px;
+            height: 30px;
+            background-color: #dddddd;
+            display: block;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid #000000;
+        }
+
+        article > input + label::before {
+            content: ' ';
+            display: block;
+            height: 60px;
+            width: 60px;
+            background-color: red;
+            left: 0;
+            right: auto;
+            position: absolute;
+        }
+
+        article > input:checked + label:before {
+            right: 0;
+            left: auto;
+        }
+
+        /*Menu pro desktop*/
+        #burger {
+            overflow: hidden;
+            width: 0;
+            height: 0;
+        }
+
+        #burger + input {
+            display: none;
+        }
+
+        #burger::before {
+            content: '\2630';
+            background-color: black;
+            color: #ffffff;
+            padding: 3px 20px 3px 20px;
+            /*display: inline-block;*/
+            cursor: pointer;
+            display: none;
+        }
+
+        #menu {
+            margin: 0;
+            padding: 0;
+        }
+
+        #menu ul {
+            margin: 0;
+            padding: 0;
+        }
+
+        #menu ul li {
+            display: inline-block;
+            list-style-type: none;
+            background-color: black;
+            margin: 0;
+            padding: 0;
+        }
+
+        #menu li a {
+            display: block;
+            text-decoration: none;
+            padding: 5px 10px;
+            color: #ffffff;
+        }
+
+        @media screen and (max-width: 420px) {
+            #burger::before {
+                display: inline-block;
+            }
+
+            #menu ul li {
+                display: block;
+            }
+
+            #menu {
+                display: none;
+            }
+
+            #burger + input:checked + #menu {
+                display: block;
+            }
+        }
+
         /*
             1. Vyrobte horizontalni menu, ktere bude tvoreno tmave sedymi obdelniky s bilym textem
             2. Menu pro sirku stranky mene nez 420px prestylujte pomoci mediaqueries tak aby byly polozky serazeny pod sebou
@@ -23,8 +117,8 @@
     </style>
 </head>
 <body>
-<input type="checkbox" id="burgerControl">
 <label id="burger" for="burgerControl"></label>
+<input type="checkbox" id="burgerControl">
 
 <nav id="menu">
     <ul>
@@ -37,7 +131,7 @@
 </nav>
 
 <article>
-    <input type="checkbox" id="chk1" />
+    <input type="checkbox" id="chk1"/>
     <label for="chk1"></label>
 </article>
 </body>
